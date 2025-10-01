@@ -2,6 +2,7 @@ package com.khanhjava.khanh_learn_java.exception;
 
 import com.khanhjava.khanh_learn_java.dto.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -10,10 +11,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Map;
 import java.util.Objects;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiResponse<Object>> handleAppException(
             AppException ex,
@@ -32,12 +35,17 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
         String enumKey = Objects.requireNonNull(ex.getFieldError()).getDefaultMessage();
         ErrorCode errorCode = ErrorCode.KEY_VALID;
+        Map<String, Object> attributes = null;
         try {
             errorCode = ErrorCode.valueOf(enumKey);
+            var constrainViolation = ex.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
+            attributes = constrainViolation.getConstraintDescriptor().getAttributes();
         } catch (IllegalArgumentException iex) {
             // LOG exception
         }
-        return ApiResponse.error(errorCode.getMessage(),
+        return ApiResponse.error(Objects.nonNull(attributes) ? mapAttribute(errorCode.getMessage(),
+                                                                            attributes
+                                 ) : errorCode.getMessage(),
                                  errorCode.getCode(),
                                  errorCode.getStatusCode(),
                                  request.getRequestURI()
@@ -73,7 +81,13 @@ public class GlobalExceptionHandler {
             RuntimeException ex,
             HttpServletRequest request) {
 
-        return ApiResponse.error(ex.getMessage(), 9999, HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI()
-        );
+        return ApiResponse.error(ex.getMessage(), 9999, HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI());
+    }
+
+    // Function
+    private String mapAttribute(String message, Map<String, Object> attributes) {
+        String MIN_ATTRIBUTE = "min";
+        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
+        return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
     }
 }

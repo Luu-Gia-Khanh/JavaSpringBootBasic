@@ -3,6 +3,9 @@ server:
   servlet:
     context-path: /api/v1
 spring:
+  output:
+    ansi:
+      enabled: ALWAYS
   datasource:
     url: jdbc:mysql://localhost:3306/java-spring-boot-db
     username: root
@@ -15,6 +18,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        
+
 jwt:
   signerKey: "j30tT3iK0/wx+LcKDmXAl5tksnpnOv9ruozTT/vTdcAWD4/NECQZMzmRthTFjFBU"

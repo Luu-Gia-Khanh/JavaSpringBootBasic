@@ -62,7 +62,6 @@ public class AuthenticationService {
         return IntrospectResponse.builder()
                                  .valid(signedJWT.verify(jwsVerifier) && expirationTime.after(new Date()))
                                  .build();
-
     }
 
     String generateToken(User user) {
