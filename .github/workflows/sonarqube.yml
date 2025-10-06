@@ -12,25 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Cần fetch lịch sử đầy đủ để SonarQube tính toán 'New Code' chính xác
           fetch-depth: 0
 
-      # Bước cần thiết cho ngôn ngữ (Ví dụ: Build/Compile cho Java/C#)
-      # - run: mvn clean install -DskipTests
-
       - name: SonarQube Scan
-        # Sử dụng SonarSource Action (nếu có) hoặc chạy lệnh SonarScanner CLI
-        # Ví dụ cho dự án Java Maven:
         run: mvn sonar:sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Cần cho việc trang trí PR
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-      # Ví dụ cho dự án dùng SonarScanner CLI:
-      # - name: Run SonarScanner CLI
-      #   run: sonar-scanner
-      #     -Dsonar.projectKey=my_project_key
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
