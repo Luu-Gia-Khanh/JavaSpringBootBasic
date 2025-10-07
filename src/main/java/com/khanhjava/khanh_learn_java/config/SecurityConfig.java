@@ -3,6 +3,7 @@ package com.khanhjava.khanh_learn_java.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,6 +11,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +35,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults());
+
         httpSecurity.authorizeHttpRequests(request ->
                                                    request.requestMatchers(HttpMethod.POST, PUBLIC_URLS)
                                                           .permitAll()
@@ -41,7 +49,6 @@ public class SecurityConfig {
                 )
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         httpSecurity.exceptionHandling(ex -> ex
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -49,6 +56,19 @@ public class SecurityConfig {
                 })
         );
         return httpSecurity.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(List.of("*"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return urlBasedCorsConfigurationSource;
     }
 
     @Bean
