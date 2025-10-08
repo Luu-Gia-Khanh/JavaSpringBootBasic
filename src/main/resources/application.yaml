@@ -3,13 +3,15 @@ server:
   servlet:
     context-path: /api/v1
 spring:
+  profiles:
+    active: prod
   output:
     ansi:
       enabled: ALWAYS
   datasource:
-    url: jdbc:mysql://localhost:3306/java-spring-boot-db
-    username: root
-    password: root
+    url: ${DBMS_CONNECTION_URL:jdbc:mysql://localhost:3306/java-spring-boot-db}
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:root}
     driverClassName: "com.mysql.cj.jdbc.Driver"
   jpa:
     hibernate:
@@ -20,6 +22,6 @@ spring:
         format_sql: true
 
 jwt:
-  signerKey: "j30tT3iK0/wx+LcKDmXAl5tksnpnOv9ruozTT/vTdcAWD4/NECQZMzmRthTFjFBU"
-  valid-duration: 10 #second
-  refreshable-duration: 120 #second
+  #  signerKey: "j30tT3iK0/wx+LcKDmXAl5tksnpnOv9ruozTT/vTdcAWD4/NECQZMzmRthTFjFBU"
+  valid-duration: 3600 #second
+  refreshable-duration: 36000 #second

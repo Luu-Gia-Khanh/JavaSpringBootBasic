@@ -5,7 +5,6 @@ import com.khanhjava.khanh_learn_java.dto.request.UserUpdateRequest;
 import com.khanhjava.khanh_learn_java.dto.response.UserResponse;
 import com.khanhjava.khanh_learn_java.entity.Role;
 import com.khanhjava.khanh_learn_java.entity.User;
-import com.khanhjava.khanh_learn_java.enums.RoleEnum;
 import com.khanhjava.khanh_learn_java.exception.AppException;
 import com.khanhjava.khanh_learn_java.exception.ErrorCode;
 import com.khanhjava.khanh_learn_java.mapper.UserMapper;
@@ -38,9 +37,7 @@ public class UserService {
         }
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        HashSet<String> roles = new HashSet<>();
-        roles.add(RoleEnum.USER.name());
-//        user.setRoles(roles);
+        
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -49,7 +46,7 @@ public class UserService {
         userMapper.updateUser(user, request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         List<Role> roles = roleRepository.findAllById(request.getRoles());
-        user.setRoles(new HashSet<Role>(roles));
+        user.setRoles(new HashSet<>(roles));
         return userRepository.save(user);
     }
 

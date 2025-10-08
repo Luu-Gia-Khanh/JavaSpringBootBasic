@@ -15,7 +15,7 @@ public enum ErrorCode {
     KEY_VALID(1000, "Invalid key", HttpStatus.INTERNAL_SERVER_ERROR),
     USERNAME_VALID(1002, "Username must be at least 3 characters long", HttpStatus.BAD_REQUEST),
     PASSWORD_VALID(1003, "Password must be at least 6 characters long", HttpStatus.BAD_REQUEST),
-    DATE_OF_BIRTH_VALID(1007, "Your name must be at least {min}", HttpStatus.BAD_REQUEST);
+    DATE_OF_BIRTH_VALID(1007, "Your birth day must be at least {min}", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

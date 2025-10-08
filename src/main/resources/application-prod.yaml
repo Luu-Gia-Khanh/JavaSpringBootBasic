@@ -1,0 +1,8 @@
+server:
+  port: 9090
+
+jwt:
+  # KEY: Move to config
+  #  signerKey: "j30tT3iK0/wx+LcKDmXAl5tksnpnOv9ruozTT/vTdcAWD4/NECQZMzmRthTFjFBU"
+  valid-duration: 3600 #second
+  refreshable-duration: 36000 #second
